@@ -1,1 +1,1 @@
-void sayhi();
+void initCUDA();

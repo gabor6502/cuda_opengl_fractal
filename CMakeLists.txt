@@ -28,6 +28,7 @@ add_executable(CUDAGLFractal  ${GLAD_FILES} ${SHADERMAN_FILES} ${VIEW_FILES} ${C
 target_include_directories(CUDAGLFractal PRIVATE ${GLAD_DIR})
 target_include_directories(CUDAGLFractal PRIVATE ${SHADERMAN_DIR})
 target_include_directories(CUDAGLFractal PRIVATE ${VIEW_DIR})
+target_include_directories(CUDAGLFractal PRIVATE ${GENERATOR_DIR})
 target_include_directories(CUDAGLFractal PRIVATE ${CONTROLLER_DIR})
 
 # GLFW Linking

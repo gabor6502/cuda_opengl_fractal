@@ -1,5 +1,6 @@
 #include "controller.h"
 #include "view.h"
+#include "generator.h"
 #include <glad.h>
 #include <assert.h>
 
@@ -77,7 +78,8 @@ Controller::Controller(unsigned short width, unsigned short height, const char *
     assert(width > 0);
     assert(height > 0);
     assert(name);
-    this->view = View::getInstance(width, height, name);
+    view = View::getInstance(width, height, name);
+    generator = Generator::getInstance();
 }
 
 Controller::~Controller()
@@ -88,13 +90,14 @@ Controller::~Controller()
 	glDeleteBuffers(1, &vao);
 
     View::destroyInstance();
+    Generator::destroyInstance();
 }
 
 // -- Instance Methods --
 
 bool Controller::isInitialized()
 { 
-    return view && view->isInitialized(); 
+    return view && generator; 
 }
 
 void Controller::run()

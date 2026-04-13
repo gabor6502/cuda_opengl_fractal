@@ -57,14 +57,14 @@ View::View(unsigned short width, unsigned short height, const char *name)
     {
         printf("Failed to create GLFW window\n");
         glfwTerminate();
-        return;
+        exit(EXIT_FAILURE);
         
     }
     glfwMakeContextCurrent(this->window);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         printf("Failed to initialize GLAD\n");
-        return;
+        exit(EXIT_FAILURE);
     }
     glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow *window, int width, int height)
@@ -80,28 +80,20 @@ View::View(unsigned short width, unsigned short height, const char *name)
     if (!shadersInit)
     {
         printf("\nshaders failed to init, exiting\n");
-        return;
+        exit(EXIT_FAILURE);
     }
     glUseProgram(shademan.getProgram());
-
-    initialized = true;
 }
 
 View::~View()
 {
-    if (initialized)
-    {
-        glfwTerminate();
-    }
+    glfwTerminate();
 }
 
 // -- Instance Methods --
 void View::display(GLuint ebo, Controller & controller)
 {
-    if (!initialized)
-    {
-        return;
-    }
+
     // -- Render --
     while (!glfwWindowShouldClose(this->window))
     {

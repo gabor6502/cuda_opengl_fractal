@@ -13,14 +13,12 @@ public:
 
     inline unsigned int getWidth() { return width; }
     inline unsigned int getHeight() { return height; }
-    inline bool isInitialized() { return initialized; }
 
 private:
     static View *instance;
 
     GLFWwindow *window;
     unsigned int width, height;
-    bool initialized = false;
 
     View(unsigned short width, unsigned short height, const char *name);
     ~View();

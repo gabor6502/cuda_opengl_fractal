@@ -27,8 +27,8 @@ void Generator::destroyInstance()
 // -- Constructor/Destructor --
 Generator::Generator(){ 
     
-    // do nothing for now
-    sayhi();
+
+    initCUDA();
 }
 
 Generator::~Generator()

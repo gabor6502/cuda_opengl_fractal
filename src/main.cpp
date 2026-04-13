@@ -15,7 +15,7 @@ int main()
     if (!controller->isInitialized())
     {
         printf("Failed to initialize.\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
     printf("Running ... ");
