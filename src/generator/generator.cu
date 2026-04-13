@@ -24,11 +24,11 @@
         }                                                                 \
     }
 
-__host__ void initCUDA(unsigned short image_width, unsigned short image_height, 
-                       float *d_dwell_map, 
-                       float *d_image_colours1,  float *d_image_colours2, 
-                       cudaGraphicsResource_t pbo_resource1, 
-                       cudaGraphicsResource_t pbo_resource2, 
+__host__ void initCUDA(unsigned short image_width, unsigned short image_height,
+                       float *d_dwell_map,
+                       float *d_image_colours1, float *d_image_colours2,
+                       cudaGraphicsResource_t pbo_resource1,
+                       cudaGraphicsResource_t pbo_resource2,
                        GLuint pbo1, GLuint pbo2)
 {
     printf("initializing CUDA (+ opengl interop) ... ");
@@ -44,7 +44,8 @@ __host__ void initCUDA(unsigned short image_width, unsigned short image_height,
         printf("\nCUDA is not supported on this machine!\n");
         exit(EXIT_FAILURE);
     }
-    CUDA_CHECK_RETURN(cudaGLSetGLDevice(DEVICE));
+    //CUDA_CHECK_RETURN(cudaGLSetGLDevice(DEVICE)); // deprecated
+    CUDA_CHECK_RETURN(cudaSetDevice(DEVICE));
 
     CUDA_CHECK_RETURN(cudaGetDeviceProperties(&deviceProp, DEVICE));
 
@@ -64,8 +65,15 @@ __host__ void initCUDA(unsigned short image_width, unsigned short image_height,
     CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours2, &device_image_size, pbo_resource2));
     assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
     CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource2));
+}
 
-    // since CUDA renders the image first, then OpenGL consumes it, CUDA will be init with pbo 1
-   // curr_pbo_resource = pbo_resource1;
-   // curr_d_image_colours = d_image_colours1;
+void destroyCUDA(float *d_dwell_map, cudaGraphicsResource_t curr_pbo_resource)
+{
+    CUDA_CHECK_RETURN(cudaFree((void *)d_dwell_map));
+
+    CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &curr_pbo_resource));
+
+    // NEED TO FIND A WAY TO FREE THE PBOS
+
+    CUDA_CHECK_RETURN(cudaDeviceReset());
 }

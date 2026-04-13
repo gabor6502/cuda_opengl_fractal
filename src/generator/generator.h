@@ -6,6 +6,9 @@
 // use first device found
 #define DEVICE 0
 
+ // red, green, and blue channels
+#define PIXEL_CHANNELS 3
+
 class cudaGraphicsResource;
 typedef cudaGraphicsResource *cudaGraphicsResource_t;
 typedef unsigned int GLuint;
@@ -14,21 +17,20 @@ class Generator
 {
 public:
 
-    static Generator * getInstance();
+    static Generator * getInstance(unsigned short width, unsigned short height);
     static void destroyInstance();
 
     inline double getZoom() { return zoom; }
     inline unsigned short getIterations() { return iterations; }
 
     inline void setZoom(double zoom) { this->zoom = zoom; }
-    inline void setIterations(unsigned short i) { iterations = i; }
-    inline void setImageWidth(unsigned short width) { image_width = width; }
-    inline void setImageHeight(unsigned short height) { image_height = height; }
-    
+    inline void setIterations(unsigned short i) { iterations = i; } 
+
+    void bindCurrentPBOToBuffer();
 
 private:
     static Generator *instance;
-    Generator();
+    Generator(unsigned short width, unsigned short height);
     ~Generator();
 
     // fractal generation transforms and parameters
@@ -38,11 +40,15 @@ private:
     unsigned short image_width, image_height;
 
     // opengl interop
+    GLuint curr_pbo;
     GLuint pbo1, pbo2;
     cudaGraphicsResource_t curr_pbo_resource;
     cudaGraphicsResource_t pbo_resource1 = 0;
     cudaGraphicsResource_t pbo_resource2 = 0;
 
     // CUDA specific device buffers
-    //curr_d_image_colours
+    float * curr_d_image_colours;
+    float * d_image_colours1;
+    float * d_image_colours2;
+    float * d_dwell_map;
 };

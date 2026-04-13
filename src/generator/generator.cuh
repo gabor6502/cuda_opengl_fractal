@@ -6,3 +6,5 @@ void initCUDA(unsigned short image_width, unsigned short image_height,
               cudaGraphicsResource_t pbo_resource1, 
               cudaGraphicsResource_t pbo_resource2, 
               GLuint pbo1, GLuint pbo2);
+
+void destroyCUDA(float *d_dwell_map, cudaGraphicsResource_t curr_pbo_resource);

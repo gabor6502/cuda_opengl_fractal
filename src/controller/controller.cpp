@@ -79,7 +79,7 @@ Controller::Controller(unsigned short width, unsigned short height, const char *
     assert(height > 0);
     assert(name);
     view = View::getInstance(width, height, name);
-    generator = Generator::getInstance();
+    generator = Generator::getInstance(width, height);
 }
 
 Controller::~Controller()
@@ -107,6 +107,8 @@ void Controller::run()
     {
         return;
     }
+
+    generator->bindCurrentPBOToBuffer();
     view->display(ebo, *this);
 }
 
