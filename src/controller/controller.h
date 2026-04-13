@@ -1,6 +1,7 @@
 #pragma once
 
 class View;
+class Generator;
 
 class Controller
 {
@@ -19,6 +20,8 @@ private:
     ~Controller();
 
     View *view = nullptr;
+    Generator *generator = nullptr;
+
     unsigned int vbo, ebo, vao;
 
 };

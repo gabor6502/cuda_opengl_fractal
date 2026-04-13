@@ -20,7 +20,7 @@ set(CONTROLLER_FILES ${CONTROLLER_DIR}/controller.h ${CONTROLLER_DIR}/controller
 
 # Generator
 set(GENERATOR_DIR ./src/generator)
-set(GENERATOR_FILES ${GENERATOR_DIR}/generator.h ${GENERATOR_DIR}/generator.cpp)
+set(GENERATOR_FILES ${GENERATOR_DIR}/generator.h ${GENERATOR_DIR}/generator.cpp ${GENERATOR_DIR}/generator.cu ${GENERATOR_DIR}/generator.cuh)
 
 add_executable(CUDAGLFractal  ${GLAD_FILES} ${SHADERMAN_FILES} ${VIEW_FILES} ${CONTROLLER_FILES} ${GENERATOR_FILES} ./src/main.cpp)
 
