@@ -28,7 +28,7 @@ void Generator::destroyInstance()
 Generator::Generator(){ 
     
 
-    initCUDA();
+    //initCUDA();
 }
 
 Generator::~Generator()

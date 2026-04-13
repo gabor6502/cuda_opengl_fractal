@@ -8,6 +8,7 @@
 
 class cudaGraphicsResource;
 typedef cudaGraphicsResource *cudaGraphicsResource_t;
+typedef unsigned int GLuint;
 
 class Generator
 {
@@ -37,7 +38,11 @@ private:
     unsigned short image_width, image_height;
 
     // opengl interop
+    GLuint pbo1, pbo2;
     cudaGraphicsResource_t curr_pbo_resource;
-    cudaGraphicsResource_t pbo_resource1;
-    cudaGraphicsResource_t pbo_resource2;
+    cudaGraphicsResource_t pbo_resource1 = 0;
+    cudaGraphicsResource_t pbo_resource2 = 0;
+
+    // CUDA specific device buffers
+    //curr_d_image_colours
 };

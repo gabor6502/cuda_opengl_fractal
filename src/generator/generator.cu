@@ -7,27 +7,36 @@
 #include "cuda_gl_interop.h"
 
 #include <iostream>
+#include <assert.h>
+
+// three channels for red, green, and blue
+#define RGB_CHANNELS 3
 
 // the standard cuda return checking macro
-#define CUDA_CHECK_RETURN(value)                                     \
-{                                                                    \
-    cudaError_t _m_cudaStat = value;                                 \
-    if ( _m_cudaStat != cudaSuccess)                                 \
-    {                                                                \
-        fprintf(stderr, "Error %s at line %d in file %s\n",          \
-            cudaGetErrorString(_m_cudaStat), __LINE__, __FILE__);    \
-        exit(EXIT_FAILURE);                                          \
-    }                                                                \
-} 
+#define CUDA_CHECK_RETURN(value)                                          \
+    {                                                                     \
+        cudaError_t _m_cudaStat = value;                                  \
+        if (_m_cudaStat != cudaSuccess)                                   \
+        {                                                                 \
+            fprintf(stderr, "Error %s at line %d in file %s\n",           \
+                    cudaGetErrorString(_m_cudaStat), __LINE__, __FILE__); \
+            exit(EXIT_FAILURE);                                           \
+        }                                                                 \
+    }
 
-__host__ void initCUDA()
+__host__ void initCUDA(unsigned short image_width, unsigned short image_height, 
+                       float *d_dwell_map, 
+                       float *d_image_colours1,  float *d_image_colours2, 
+                       cudaGraphicsResource_t pbo_resource1, 
+                       cudaGraphicsResource_t pbo_resource2, 
+                       GLuint pbo1, GLuint pbo2)
 {
     printf("initializing CUDA (+ opengl interop) ... ");
 
-     int deviceCount = 0;
+    int deviceCount = 0;
     cudaDeviceProp deviceProp;
 
-        // make sure the hardware is CUDA compatible
+    // make sure the hardware is CUDA compatible
     CUDA_CHECK_RETURN(cudaGetDeviceCount(&deviceCount));
 
     if (deviceCount == 0)
@@ -38,4 +47,25 @@ __host__ void initCUDA()
     CUDA_CHECK_RETURN(cudaGLSetGLDevice(DEVICE));
 
     CUDA_CHECK_RETURN(cudaGetDeviceProperties(&deviceProp, DEVICE));
+
+    printf("allocating device memory ... ");
+    CUDA_CHECK_RETURN(cudaMalloc((void **)&d_dwell_map, sizeof(unsigned int) * image_width * image_height));
+
+    size_t device_image_size;
+
+    CUDA_CHECK_RETURN(cudaGraphicsGLRegisterBuffer(&pbo_resource1, pbo1, cudaGraphicsRegisterFlagsWriteDiscard));
+    CUDA_CHECK_RETURN(cudaGraphicsMapResources(1, &pbo_resource1));
+    CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours1, &device_image_size, pbo_resource1));
+    assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
+    // CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource1)); see comment below
+
+    CUDA_CHECK_RETURN(cudaGraphicsGLRegisterBuffer(&pbo_resource2, pbo2, cudaGraphicsRegisterFlagsWriteDiscard));
+    CUDA_CHECK_RETURN(cudaGraphicsMapResources(1, &pbo_resource2));
+    CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours2, &device_image_size, pbo_resource2));
+    assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
+    CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource2));
+
+    // since CUDA renders the image first, then OpenGL consumes it, CUDA will be init with pbo 1
+   // curr_pbo_resource = pbo_resource1;
+   // curr_d_image_colours = d_image_colours1;
 }
