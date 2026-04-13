@@ -6,7 +6,7 @@
 // -- Static Methods --
 
 Controller *Controller::instance = nullptr;
-Controller *Controller::getInstance(unsigned int width, unsigned int height, const char *name)
+Controller *Controller::getInstance(unsigned short width, unsigned short height, const char *name)
 {
     if (!Controller::instance)
     {
@@ -72,7 +72,7 @@ void Controller::destroyInstance()
 
 // -- Constructor/Destructor --
 
-Controller::Controller(unsigned int width, unsigned int height, const char *name)
+Controller::Controller(unsigned short width, unsigned short height, const char *name)
 {
     assert(width > 0);
     assert(height > 0);

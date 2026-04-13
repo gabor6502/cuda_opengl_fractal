@@ -17,7 +17,7 @@ void View::framebuffer_size_callback(GLFWwindow *window, int width, int height)
 // -- Static Methods --
 
 View *View::instance = nullptr;
-View *View::getInstance(unsigned int width, unsigned int height, const char *name)
+View *View::getInstance(unsigned short width, unsigned short height, const char *name)
 {
     if (!View::instance)
     {
@@ -40,7 +40,7 @@ void View::destroyInstance()
 
 // -- Constructor/Destructor --
 
-View::View(unsigned int width, unsigned int height, const char *name)
+View::View(unsigned short width, unsigned short height, const char *name)
     : width(width), height(height)
 {
 
