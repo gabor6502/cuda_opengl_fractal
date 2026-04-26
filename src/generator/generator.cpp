@@ -30,6 +30,8 @@ Generator::Generator(unsigned short width, unsigned short height){
     image_width = width;
     image_height = height;
 
+    // since generation needs pbos to render to, this is where they'll be kept
+
 	glGenBuffers(1, &pbo1);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo1);
 	glBufferData(GL_PIXEL_UNPACK_BUFFER, sizeof(float) * PIXEL_CHANNELS * width * height, 0, GL_STREAM_DRAW);
@@ -43,8 +45,6 @@ Generator::Generator(unsigned short width, unsigned short height){
     // since CUDA renders the image first, then OpenGL consumes it, CUDA will be init with pbo 1
    curr_pbo_resource = pbo_resource1;
    curr_d_image_colours = d_image_colours1;
-
-   // any other init?
 }
 
 Generator::~Generator()
