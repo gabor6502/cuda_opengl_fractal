@@ -39,14 +39,17 @@ Generator::Generator(unsigned short width, unsigned short height){
 	glBufferData(GL_PIXEL_UNPACK_BUFFER, sizeof(float) * PIXEL_CHANNELS * width * height, 0, GL_STREAM_DRAW);
 
     initCUDA(image_width, image_height, d_dwell_map, d_image_colours1, d_image_colours2, pbo_resource1, pbo_resource2, pbo1, pbo2);
+
     // since CUDA renders the image first, then OpenGL consumes it, CUDA will be init with pbo 1
    curr_pbo_resource = pbo_resource1;
    curr_d_image_colours = d_image_colours1;
+
+   // any other init?
 }
 
 Generator::~Generator()
 {
-    destroyCUDA(d_dwell_map, curr_pbo_resource);
+    destroyCUDA(d_dwell_map, d_image_colours1, d_image_colours2, pbo_resource1, pbo_resource2);
 }
 
 // -- Instance Methods --
