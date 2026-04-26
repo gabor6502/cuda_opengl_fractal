@@ -67,13 +67,16 @@ __host__ void initCUDA(unsigned short image_width, unsigned short image_height,
     CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource2));
 }
 
-void destroyCUDA(float *d_dwell_map, cudaGraphicsResource_t curr_pbo_resource)
+__host__ void destroyCUDA(float *d_dwell_map, float * d_image_colours1, float * d_image_colours2, 
+                          cudaGraphicsResource_t pbo1, cudaGraphicsResource_t pbo2)
 {
     CUDA_CHECK_RETURN(cudaFree((void *)d_dwell_map));
+    CUDA_CHECK_RETURN(cudaFree((void *)d_image_colours1));
+    CUDA_CHECK_RETURN(cudaFree((void *)d_image_colours2));
 
-    CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &curr_pbo_resource));
-
-    // NEED TO FIND A WAY TO FREE THE PBOS
+    // cuda will unmap the resources for Opengl
+    CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo1));
+    CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo2));
 
     CUDA_CHECK_RETURN(cudaDeviceReset());
 }
