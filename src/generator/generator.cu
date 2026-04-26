@@ -51,25 +51,42 @@ __host__ void initCUDA(unsigned short image_width, unsigned short image_height,
 
     printf("allocating device memory ... ");
     CUDA_CHECK_RETURN(cudaMalloc((void **)&d_dwell_map, sizeof(unsigned int) * image_width * image_height));
+    assert(d_dwell_map);
 
     size_t device_image_size;
-
-    CUDA_CHECK_RETURN(cudaGraphicsGLRegisterBuffer(&pbo_resource1, pbo1, cudaGraphicsRegisterFlagsWriteDiscard));
-    CUDA_CHECK_RETURN(cudaGraphicsMapResources(1, &pbo_resource1));
-    CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours1, &device_image_size, pbo_resource1));
-    assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
-    // CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource1)); see comment below
 
     CUDA_CHECK_RETURN(cudaGraphicsGLRegisterBuffer(&pbo_resource2, pbo2, cudaGraphicsRegisterFlagsWriteDiscard));
     CUDA_CHECK_RETURN(cudaGraphicsMapResources(1, &pbo_resource2));
     CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours2, &device_image_size, pbo_resource2));
+    assert(pbo_resource2);
     assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
     CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource2));
+
+    CUDA_CHECK_RETURN(cudaGraphicsGLRegisterBuffer(&pbo_resource1, pbo1, cudaGraphicsRegisterFlagsWriteDiscard));
+    CUDA_CHECK_RETURN(cudaGraphicsMapResources(1, &pbo_resource1));
+    CUDA_CHECK_RETURN(cudaGraphicsResourceGetMappedPointer((void **)&d_image_colours1, &device_image_size, pbo_resource1));
+    assert(pbo_resource1);
+    assert(device_image_size == sizeof(float) * image_width * image_height * RGB_CHANNELS);
+   // CUDA_CHECK_RETURN(cudaGraphicsUnmapResources(1, &pbo_resource1)); render here first so don't unmap
+
 }
 
 __host__ void destroyCUDA(float *d_dwell_map, float * d_image_colours1, float * d_image_colours2, 
                           cudaGraphicsResource_t pbo1, cudaGraphicsResource_t pbo2)
 {
+
+    assert(d_dwell_map);
+    assert(d_image_colours1);
+    assert(d_image_colours2);
+    assert(pbo1);
+    assert(pbo2);
+
+    if (!(d_dwell_map || d_image_colours1 || d_image_colours2 || pbo1 || pbo2))
+    {
+        printf("Tried to free null resources\n");
+        exit(EXIT_FAILURE);
+    }
+
     CUDA_CHECK_RETURN(cudaFree((void *)d_dwell_map));
     CUDA_CHECK_RETURN(cudaFree((void *)d_image_colours1));
     CUDA_CHECK_RETURN(cudaFree((void *)d_image_colours2));

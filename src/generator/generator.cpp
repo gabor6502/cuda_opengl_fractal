@@ -45,6 +45,7 @@ Generator::Generator(unsigned short width, unsigned short height){
     // since CUDA renders the image first, then OpenGL consumes it, CUDA will be init with pbo 1
    curr_pbo_resource = pbo_resource1;
    curr_d_image_colours = d_image_colours1;
+   curr_pbo = pbo2;
 }
 
 Generator::~Generator()

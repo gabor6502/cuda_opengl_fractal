@@ -47,8 +47,8 @@ private:
     cudaGraphicsResource_t pbo_resource2 = 0;
 
     // CUDA specific device buffers
-    float * curr_d_image_colours;
-    float * d_image_colours1;
-    float * d_image_colours2;
-    float * d_dwell_map;
+    float * curr_d_image_colours = nullptr;
+    float * d_image_colours1 = nullptr;
+    float * d_image_colours2 = nullptr;
+    float * d_dwell_map = nullptr;
 };
